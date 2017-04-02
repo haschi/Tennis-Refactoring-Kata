@@ -1,3 +1,4 @@
+import tennis.Score;
 
 public class TennisGame1 implements TennisGame {
     
@@ -12,65 +13,89 @@ public class TennisGame1 implements TennisGame {
     }
 
     public void wonPoint(String playerName) {
-        if (playerName == "player1")
+        if (playerName.equals(player1Name))
             m_score1 += 1;
         else
             m_score2 += 1;
     }
 
     public String getScore() {
-        String score = "";
-        int tempScore=0;
-        if (m_score1==m_score2)
+        final Score score1 = new Score(m_score1, player1Name);
+        final Score score2 = new Score(m_score2, player2Name);
+
+        if (istGleichstand(score1, score2))
         {
-            switch (m_score1)
-            {
-                case 0:
-                        score = "Love-All";
-                    break;
-                case 1:
-                        score = "Fifteen-All";
-                    break;
-                case 2:
-                        score = "Thirty-All";
-                    break;
-                default:
-                        score = "Deuce";
-                    break;
-                
-            }
+            return gleichstand(score1);
         }
-        else if (m_score1>=4 || m_score2>=4)
+        else if (istVorteil(score1, score2))
         {
-            int minusResult = m_score1-m_score2;
-            if (minusResult==1) score ="Advantage player1";
-            else if (minusResult ==-1) score ="Advantage player2";
-            else if (minusResult>=2) score = "Win for player1";
-            else score ="Win for player2";
+            return vorteil(score1, score2);
         }
-        else
+
+        return spielstand(score1, score2);
+    }
+
+    private static String spielstand(Score score1, Score score2) {
+        return spielstand(score1) + "-" + spielstand(score2);
+    }
+
+    private static String spielstand(Score score) {
+        switch(score.getScore())
         {
-            for (int i=1; i<3; i++)
-            {
-                if (i==1) tempScore = m_score1;
-                else { score+="-"; tempScore = m_score2;}
-                switch(tempScore)
-                {
-                    case 0:
-                        score+="Love";
-                        break;
-                    case 1:
-                        score+="Fifteen";
-                        break;
-                    case 2:
-                        score+="Thirty";
-                        break;
-                    case 3:
-                        score+="Forty";
-                        break;
-                }
-            }
+            case 0:
+                return "Love";
+            case 1:
+                return "Fifteen";
+            case 2:
+                return "Thirty";
+            case 3:
+                return "Forty";
+
         }
-        return score;
+
+        throw new IllegalStateException();
+    }
+
+    private static String vorteil(Score score1, Score score2) {
+
+        return String.format("%s %s",
+                advantage(score1.getScore(), score2.getScore()),
+                player(score1, score2));
+    }
+
+    private static String player(Score score1, Score score2) {
+        return Integer.signum(score1.getScore() - score2.getScore()) == 1 ? score1.getPlayer() : score2.getPlayer();
+    }
+
+    private static String advantage(int score1, int score2) {
+        return Math.abs(score1 - score2) == 1 ? "Advantage" : "Win for";
+    }
+
+    private static String gleichstand(Score xscore) {
+
+        switch (xscore.getScore())
+        {
+            case 0:
+                    return "Love-All";
+
+            case 1:
+                    return "Fifteen-All";
+
+            case 2:
+                    return "Thirty-All";
+
+            default:
+                    return "Deuce";
+
+
+        }
+    }
+
+    private static boolean istVorteil(Score score1, Score score2) {
+        return score1.getScore() >=4 || score2.getScore() >=4;
+    }
+
+    private static boolean istGleichstand(Score score1, Score score2) {
+        return score1.getScore() == score2.getScore();
     }
 }
