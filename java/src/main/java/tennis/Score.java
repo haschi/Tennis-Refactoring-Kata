@@ -1,65 +1,27 @@
 package tennis;
 
-public class Score {
+public abstract class Score implements ScoreInterface {
     private final int score;
     private final String player;
 
-    public Score(int score, String player) {
+    Score(int score, String player) {
         this.score = score;
         this.player = player;
     }
 
-    // https://sourcemaking.com/refactoring/replace-type-code-with-subclasses
-    public static Score erzeugen(int score, String player) {
-        switch (score) {
-            case 0: return new Love(player);
-            default: return new Score(score, player);
-        }
-    }
-
-    public boolean istVorteil(Score gegner) {
-        return getScore() >=4 || gegner.getScore() >=4;
+    public boolean hatVorteil() {
+        return false;
     }
 
     public boolean istGleichstand(Score gegner) {
         return getScore() == gegner.getScore();
     }
 
-    public String gleichstand() {
-
-        switch (getScore())
-        {
-            case 1:
-                    return "Fifteen-All";
-
-            case 2:
-                    return "Thirty-All";
-
-            default:
-                    return "Deuce";
-
-
-        }
+    public String gleichstandAlsZeichenfolge() {
+        return toString() + "-All";
     }
 
-    public Score nachfolger() {
-        return erzeugen(getScore() + 1, getPlayer());
-    }
-
-    public String wertAlsZeichenkette() {
-        switch(getScore())
-        {
-            case 1:
-                return "Fifteen";
-            case 2:
-                return "Thirty";
-            case 3:
-                return "Forty";
-
-        }
-
-        throw new IllegalStateException();
-    }
+    public abstract Score nachfolger(Score gegner);
 
     public int getScore() {
         return score;

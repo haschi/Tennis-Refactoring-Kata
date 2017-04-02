@@ -1,8 +1,5 @@
 package tennis;
 
-/**
- * Created by matthias on 02.04.17.
- */
 public class Love extends Score {
     public Love(String player) {
         super(0, player);
@@ -13,11 +10,11 @@ public class Love extends Score {
         return 0;
     }
 
-    @Override public String gleichstand() {
-        return "Love-All";
+    @Override public String toString() {
+        return "Love";
     }
 
-    @Override public String wertAlsZeichenkette() {
-        return "Love";
+    @Override public Score nachfolger(Score gegner) {
+        return new Fifteen(getPlayer());
     }
 }
