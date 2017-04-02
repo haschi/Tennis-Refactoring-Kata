@@ -4,14 +4,17 @@ public class Score {
     private final int score;
     private final String player;
 
-    private Score(int score, String player) {
+    public Score(int score, String player) {
         this.score = score;
         this.player = player;
     }
 
     // https://sourcemaking.com/refactoring/replace-type-code-with-subclasses
     public static Score erzeugen(int score, String player) {
-        return new Score(score, player);
+        switch (score) {
+            case 0: return new Love(player);
+            default: return new Score(score, player);
+        }
     }
 
     public boolean istVorteil(Score gegner) {
@@ -26,9 +29,6 @@ public class Score {
 
         switch (getScore())
         {
-            case 0:
-                    return "Love-All";
-
             case 1:
                     return "Fifteen-All";
 
@@ -49,8 +49,6 @@ public class Score {
     public String wertAlsZeichenkette() {
         switch(getScore())
         {
-            case 0:
-                return "Love";
             case 1:
                 return "Fifteen";
             case 2:
